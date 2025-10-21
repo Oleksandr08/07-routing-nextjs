@@ -29,7 +29,8 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export async function fetchNotes(
   search?: string,
-  page?: number
+  page?: number,
+  tag?: string
 ): Promise<FetchNotesResponse> {
   console.log(`Я отримую нотатки із сторінки ${page}`);
 
