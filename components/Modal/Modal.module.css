@@ -20,3 +20,16 @@
   position: relative;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
+
+.backBtn {
+  align-self: flex-end;
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #000000;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: underline;
+  display: inline-block;
+  background-color: transparent;
+}
