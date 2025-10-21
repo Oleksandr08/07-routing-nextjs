@@ -30,6 +30,10 @@ const NoteFormSchema = Yup.object().shape({
     .required('It is required'),
 });
 
+// заголовок нотатки має мати мінімальну довжину символів 3, максимальну – 50 та бути обовязковим полем;
+// контент нотатки має мати максимальну довжину символів 500;
+// тег нотатки має бути одним із таких значень: Todo, Work, Personal, Meeting, Shopping, і є обов’язковим полем.
+
 export default function NoteForm({ modalClose }: NoteFormProps) {
   const fieldId = useId();
   const queryClient = useQueryClient();
