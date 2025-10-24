@@ -56,16 +56,3 @@ export async function deleteNote(id: string) {
   const res = await axios.delete<Note>(`/notes/${id}`);
   return res.data;
 }
-// Тип відповіді сервера для списку нотаток
-export interface FetchNotesResponse {
-  notes: {
-    id: string;
-    title: string;
-    content?: string;
-    tag: string;
-  }[];
-  page: number;
-  perPage: number;
-  total: number;
-  totalPages: number;
-}
