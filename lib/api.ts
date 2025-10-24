@@ -1,68 +1,58 @@
 import axios from 'axios';
-import type { Note } from '@/types/note';
+import type { Note, NoteFormData } from '../types/note';
 
-const API_TOKEN = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
-
-const instance = axios.create({
-  baseURL: 'https://notehub-public.goit.study/api/',
-  timeout: 1000,
-  headers: {
-    Authorization: `Bearer ${API_TOKEN}`,
-  },
-  params: {
-    perPage: 12,
-  },
-});
-
-export interface FetchNotesResponse {
-  notes: Note[] | [];
+interface ResponseAPI {
+  notes: Note[];
   totalPages: number;
 }
 
-interface NewNote {
-  title: string;
-  tag: string;
-  content: string;
+interface OptionsAPI {
+  params: {
+    search: string;
+    tag?: string;
+    page: number;
+    perPage: number;
+  };
 }
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+axios.defaults.baseURL = 'https://notehub-public.goit.study/api';
+axios.defaults.headers.common[
+  'Authorization'
+] = `Bearer ${process.env.NEXT_PUBLIC_NOTEHUB_TOKEN}`;
 
 export async function fetchNotes(
-  search?: string,
-  page?: number,
+  searchWord: string,
+  page: number,
   tag?: string
-): Promise<FetchNotesResponse> {
-  console.log(`Я отримую нотатки із сторінки ${page}`);
-
-  await delay(1000);
-  try {
-    const response = await instance.get<FetchNotesResponse>('notes', {
-      params: { search, page },
-    });
-    console.log(response.data);
-    return { notes: response.data.notes, totalPages: response.data.totalPages };
-  } catch (error) {
-    console.log('The error happend', error);
-    throw error;
+) {
+  if (tag === 'All') {
+    tag = undefined;
   }
+
+  const options: OptionsAPI = {
+    params: {
+      search: searchWord,
+      tag: tag,
+      page: page,
+      perPage: 12,
+    },
+  };
+
+  const res = await axios.get<ResponseAPI>('/notes', options);
+  return res.data;
 }
 
-export async function createNote(newNote: NewNote): Promise<Note> {
-  console.log('Я створюю нову нотатку', newNote);
-  const response = await instance.post<Note>('notes', newNote);
-  console.log(response.data);
-  return response.data;
+export async function fetchNoteById(id: string) {
+  const res = await axios.get<Note>(`/notes/${id}`);
+  return res.data;
 }
 
-export async function deleteNote(id: string): Promise<Note> {
-  console.log('Я видалю нотатку');
-  const response = await instance.delete<Note>(`notes/${id}`);
-  console.log(response.data);
-  return response.data;
+export async function createNote(data: NoteFormData) {
+  const res = await axios.post<Note>('/notes', data);
+  return res.data;
 }
 
-export async function fetchNoteById(id: string): Promise<Note> {
-  await delay(3000);
-  const response = await instance.get<Note>(`notes/${id}`);
-  return response.data;
+export async function deleteNote(id: string) {
+  const res = await axios.delete<Note>(`/notes/${id}`);
+  return res.data;
 }
